@@ -19,6 +19,7 @@ export const request = <T>(
       if (res.ok) {
         return res.json() as Promise<T>;
       }
+
       throw new Error(res.statusText);
     })
     .catch((err) => {
