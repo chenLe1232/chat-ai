@@ -62,6 +62,7 @@ export class Home extends Component {
       audioSource.node.on(
         AudioSource.EventType.ENDED,
         async () => {
+          //! 有一个 bug 最后一轮对话 文案展示了 但是语音没有展示出来
           if (onEnd && !this.isInConversation) {
             this.isInConversation = true;
             await onEnd();
@@ -108,14 +109,14 @@ export class Home extends Component {
       this.playAudio(url, async () => await this.getDogEmotion(labelTxt));
     }
   }
-  async getDogEmotion(msg = "我好难受宝贝，今天在加班，好想你") {
+  async getDogEmotion(msg = "") {
     if (this.dogSession >= this.maxSession) return;
     this.dogSession++;
     await this.getEmotion({
       msg,
     });
   }
-  async getCatEmotion(msg = "我好难受宝贝，今天在加班，好想你") {
+  async getCatEmotion(msg = "") {
     if (this.catSession >= this.maxSession) return;
     this.catSession++;
     await this.getEmotion({
@@ -132,6 +133,7 @@ export class Home extends Component {
     console.time("getEmotion");
     const res = await post<ChatRes>("http://localhost:3000/normalChat", {
       msg,
+      role: type === "dog" ? "man" : "cat",
     });
     console.timeEnd("getEmotion");
     if (res.msg) {
